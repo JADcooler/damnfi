@@ -5,7 +5,7 @@ import "solmate/src/utils/FixedPointMathLib.sol";
 import "solmate/src/utils/ReentrancyGuard.sol";
 import { SafeTransferLib, ERC4626, ERC20 } from "solmate/src/mixins/ERC4626.sol";
 import "solmate/src/auth/Owned.sol";
-import { IERC3156FlashBorrower, IERC3156FlashLender } from "@openzeppelin/contracts/interfaces/IERC3156.sol";
+import { IERC3156FlashBorrower, IERC3156FlashLender } from "openzeppelin-contracts/contracts/interfaces/IERC3156.sol";
 
 /**
  * @title UnstoppableVault
@@ -40,7 +40,7 @@ contract UnstoppableVault is IERC3156FlashLender, ReentrancyGuard, Owned, ERC462
     /**
      * @inheritdoc IERC3156FlashLender
      */
-    function maxFlashLoan(address _token) public view returns (uint256) {
+    function maxFlashLoan(address _token) override public view returns (uint256) {
         if (address(asset) != _token)
             return 0;
 
@@ -50,7 +50,7 @@ contract UnstoppableVault is IERC3156FlashLender, ReentrancyGuard, Owned, ERC462
     /**
      * @inheritdoc IERC3156FlashLender
      */
-    function flashFee(address _token, uint256 _amount) public view returns (uint256 fee) {
+    function flashFee(address _token, uint256 _amount) override public view returns (uint256 fee) {
         if (address(asset) != _token)
             revert UnsupportedCurrency();
 
@@ -89,7 +89,7 @@ contract UnstoppableVault is IERC3156FlashLender, ReentrancyGuard, Owned, ERC462
         address _token,
         uint256 amount,
         bytes calldata data
-    ) external returns (bool) {
+    ) override external returns (bool) {
         if (amount == 0) revert InvalidAmount(0); // fail early
         if (address(asset) != _token) revert UnsupportedCurrency(); // enforce ERC3156 requirement
         uint256 balanceBefore = totalAssets();

@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/interfaces/IERC3156FlashBorrower.sol";
+import "openzeppelin-contracts/contracts/interfaces/IERC3156FlashBorrower.sol";
 import "solmate/src/auth/Owned.sol";
-import { UnstoppableVault, ERC20 } from "../unstoppable/UnstoppableVault.sol";
+import { UnstoppableVault, ERC20 } from "UnstoppableVault.sol";
 
 /**
  * @title ReceiverUnstoppable
@@ -24,7 +24,7 @@ contract ReceiverUnstoppable is Owned, IERC3156FlashBorrower {
         uint256 amount,
         uint256 fee,
         bytes calldata
-    ) external returns (bytes32) {
+    ) external override returns (bytes32) {
         if (initiator != address(this) || msg.sender != address(pool) || token != address(pool.asset()) || fee != 0)
             revert UnexpectedFlashLoan();
 
