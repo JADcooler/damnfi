@@ -3,15 +3,15 @@ const { expect } = require('chai');
 const { setBalance } = require('@nomicfoundation/hardhat-network-helpers');
 
 describe('[Challenge] Side entrance', function () {
-    let deployer, player;
-    let pool;
+    var deployer, player;
+    var pool;
 
     const ETHER_IN_POOL = 1000n * 10n ** 18n;
     const PLAYER_INITIAL_ETH_BALANCE = 1n * 10n ** 18n;
+    [deployer, player] = await ethers.getSigners();
 
     before(async function () {
         /** SETUP SCENARIO - NO NEED TO CHANGE ANYTHING HERE */
-        [deployer, player] = await ethers.getSigners();
 
         // Deploy pool and fund it
         pool = await (await ethers.getContractFactory('SideEntranceLenderPool', deployer)).deploy();
@@ -26,6 +26,11 @@ describe('[Challenge] Side entrance', function () {
 
     it('Execution', async function () {
         /** CODE YOUR SOLUTION HERE */
+	const atco = await (await ethers.getContractFactory('callForwarder',player)).deploy(
+	pool.address
+	);
+	await atco.connect(player).meow();
+	await atco.connect(player).withdraw();
     });
 
     after(async function () {
