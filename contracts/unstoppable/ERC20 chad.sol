@@ -1,11 +1,11 @@
 pragma solidity ^0.8.0;
 
 
-import "openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
-
+import "solmate/src/tokens/ERC20.sol";
+//https://www.diffchecker.com/HhATt7gP/
 contract ERC20CHAD is ERC20
 {
-    constructor() ERC20("ERChad", "ECC")
+    constructor() ERC20("ERChad", "ECC",18)
     {
 
     }

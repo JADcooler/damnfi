@@ -12,7 +12,7 @@ import { AccountingToken } from "./AccountingToken.sol";
  */
 contract TheRewarderPool {
     using FixedPointMathLib for uint256;
-
+    event asd(uint256 reward);
     // Minimum duration of each round of rewards in seconds
     uint256 private constant REWARDS_ROUND_MIN_DURATION = 5 days;
     
@@ -70,6 +70,7 @@ contract TheRewarderPool {
         SafeTransferLib.safeTransfer(liquidityToken, msg.sender, amount);
     }
 
+    event qwe(uint totalDep, uint amountDep);
     function distributeRewards() public returns (uint256 rewards) {
         if (isNewRewardsRound()) {
             _recordSnapshot();
@@ -77,12 +78,13 @@ contract TheRewarderPool {
 
         uint256 totalDeposits = accountingToken.totalSupplyAt(lastSnapshotIdForRewards);
         uint256 amountDeposited = accountingToken.balanceOfAt(msg.sender, lastSnapshotIdForRewards);
-
+        emit qwe(totalDeposits, amountDeposited);
         if (amountDeposited > 0 && totalDeposits > 0) {
             rewards = amountDeposited.mulDiv(REWARDS, totalDeposits);
-            if (rewards > 0 && !_hasRetrievedReward(msg.sender)) {
+            if (rewards > 0 ) {
                 rewardToken.mint(msg.sender, rewards);
-                lastRewardTimestamps[msg.sender] = uint64(block.timestamp);
+                
+                emit asd(rewards);
             }
         }
     }
@@ -91,7 +93,7 @@ contract TheRewarderPool {
         lastSnapshotIdForRewards = uint128(accountingToken.snapshot());
         lastRecordedSnapshotTimestamp = uint64(block.timestamp);
         unchecked {
-            ++roundNumber;
+            ++roundNumber; 
         }
     }
 
@@ -101,8 +103,13 @@ contract TheRewarderPool {
                 && lastRewardTimestamps[account] <= lastRecordedSnapshotTimestamp + REWARDS_ROUND_MIN_DURATION
         );
     }
-
-    function isNewRewardsRound() public view returns (bool) {
-        return block.timestamp >= lastRecordedSnapshotTimestamp + REWARDS_ROUND_MIN_DURATION;
+    uint lock = 1;
+    function isNewRewardsRound() public returns (bool) {
+        if(lock<3)
+        {
+            
+            lock+=1;
+            return true;
+        }
     }
 }
