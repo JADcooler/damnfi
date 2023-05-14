@@ -1660,7 +1660,7 @@ hardhat-watcher@^2.1.1:
   dependencies:
     chokidar "^3.5.3"
 
-hardhat@^2.0.0, hardhat@^2.0.2, hardhat@^2.0.4, hardhat@^2.9.4, hardhat@^2.9.5, hardhat@2.12.4:
+hardhat@^2.0.0, hardhat@^2.0.2, hardhat@^2.0.4, hardhat@^2.12.4, hardhat@^2.9.4, hardhat@^2.9.5:
   version "2.12.4"
   resolved "https://registry.npmjs.org/hardhat/-/hardhat-2.12.4.tgz"
   integrity sha512-rc9S2U/4M+77LxW1Kg7oqMMmjl81tzn5rNFARhbXKUA1am/nhfMJEujOjuKvt+ZGMiZ11PYSe8gyIpB/aRNDgw==

