@@ -1,20 +1,22 @@
 const { expect } = require('chai');
 const { ethers } = require('hardhat');
 const { setBalance } = require('@nomicfoundation/hardhat-network-helpers');
+const { Wallet } = require('ethers');
 
 describe('Compromised challenge', function () {
     let deployer, player;
     let oracle, exchange, nftToken;
-    
+
     // THE SOLUTION FOR THE HIDDEN MESSAGE IS
 
     // b'0xc678ef1aa456da65c6fc5861d44892cdfac0c6c8c2560bf0c9fbcdae2f4735a9'
     // b'0x208242c40acdfa9ed889e685c23547acbed9befc60371e9875fbcd736340bb48'
     const sources = [
         '0xA73209FB1a42495120166736362A1DfA9F95A105',
-        '0xe92401A4d3af5E446d93D11EEc806b1462b39D15',
-        '0x81A5D6E50C214044bE44cA0CB057fe119097850c'
+        '0xe92401A4d3af5E446d93D11EEc806b1462b39D15', //compromised
+        '0x81A5D6E50C214044bE44cA0CB057fe119097850c' //compromised
     ];
+
 
 
     const EXCHANGE_INITIAL_ETH_BALANCE = 999n * 10n ** 18n;
@@ -25,7 +27,7 @@ describe('Compromised challenge', function () {
     before(async function () {
         /** SETUP SCENARIO - NO NEED TO CHANGE ANYTHING HERE */
         [deployer, player] = await ethers.getSigners();
-        
+
         // Initialize balance of the trusted source addresses
         for (let i = 0; i < sources.length; i++) {
             setBalance(sources[i], TRUSTED_SOURCE_INITIAL_ETH_BALANCE);
@@ -58,7 +60,16 @@ describe('Compromised challenge', function () {
 
     it('Execution', async function () {
         /** CODE YOUR SOLUTION HERE */
-    });
+        
+        const provider = await new ethers.providers.JsonRpcProvider("localhost");
+        const CompromisedOracle1 = new Wallet("0xc678ef1aa456da65c6fc5861d44892cdfac0c6c8c2560bf0c9fbcdae2f4735a9", provider);
+        const CompromisedOracle2 = new Wallet("0x208242c40acdfa9ed889e685c23547acbed9befc60371e9875fbcd736340bb48", provider);
+
+        console.log("The compromised keys are ")
+        console.log(await CompromisedOracle1.getAddress());
+        console.log(await CompromisedOracle2.getAddress());        
+
+        });
 
     after(async function () {
         /** SUCCESS CONDITIONS - NO NEED TO CHANGE ANYTHING HERE */
