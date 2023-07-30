@@ -6,26 +6,27 @@ require('dotenv').config()
     return Math.floor(Date.now() / 1000);
   }
   
-  async function main() {
+  async function main(tokenOwner, tokenReceiver, myToken) {
   
+    console.log("REACHED")
     // get a provider instance
-    const provider = new ethers.providers.StaticJsonRpcProvider(process.env.RPC_URL)
+    const provider = ethers.provider;
   
     // get the network chain id
     const chainId = (await provider.getNetwork()).chainId;
   
-    // create a signer instance with the token owner
-    const tokenOwner = await new ethers.Wallet(process.env.PRIVATE_KEY_DEPLOYER, provider)
+    // // create a signer instance with the token owner
+    // const tokenOwner = await new ethers.Wallet(process.env.PRIVATE_KEY_DEPLOYER, provider)
 
-    // create a signer instance with the token receiver
-    const tokenReceiver = await new ethers.Wallet(process.env.PRIVATE_KEY_ACCOUNT_2, provider)
+    // // create a signer instance with the token receiver
+    // const tokenReceiver = await new ethers.Wallet(process.env.PRIVATE_KEY_ACCOUNT_2, provider)
   
-    // get the MyToken contract factory and deploy a new instance of the contract
-    const myToken = new ethers.Contract("YOUR_DEPLOYED_CONTRACT_ADDRESS", abi, provider)
+    // // get the MyToken contract factory and deploy a new instance of the contract
+    // const myToken = new ethers.Contract("YOUR_DEPLOYED_CONTRACT_ADDRESS", abi, provider)
   
     // check account balances
     let tokenOwnerBalance = (await myToken.balanceOf(tokenOwner.address)).toString()
-    let tokenReceiverBalance = (await myToken.balanceOf(tokenReceiver.address)).toString()
+    let tokenReceiverBalance = (await myToken.balanceOf(tokenReceiver)).toString()
 
     console.log(`Starting tokenOwner balance: ${tokenOwnerBalance}`);
     console.log(`Starting tokenReceiver balance: ${tokenReceiverBalance}`);
@@ -73,7 +74,7 @@ require('dotenv').config()
     // set the Permit type values
     const values = {
       owner: tokenOwner.address,
-      spender: tokenReceiver.address,
+      spender: tokenReceiver,
       value: value,
       nonce: nonces,
       deadline: deadline,
@@ -93,11 +94,13 @@ require('dotenv').config()
       sig
     );
  
- 
+    console.log("RECOVERED", recovered);
+    return [sig.v,sig.r,sig.s];
+
     // permit the tokenReceiver address to spend tokens on behalf of the tokenOwner
     // let tx = await myToken.connect(tokenOwner).permit(
     //   tokenOwner.address,
-    //   tokenReceiver.address,
+    //   tokenReceiver,
     //   value,
     //   deadline,
     //   sig.v,
