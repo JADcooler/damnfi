@@ -3,7 +3,7 @@ pragma solidity ^0.6.0;
 
 import "@uniswap/v2-periphery/contracts/libraries/UniswapV2Library.sol";
 import "@uniswap/v2-periphery/contracts/libraries/SafeMath.sol";
-
+import "hardhat/console.sol";
 interface IERC20 {
     function transfer(address to, uint256 amount) external returns (bool);
     function transferFrom(address from, address to, uint256 amount) external returns (bool);
@@ -64,6 +64,7 @@ contract PuppetV2Pool {
     function _getOracleQuote(uint256 amount) private view returns (uint256) {
         (uint256 reservesWETH, uint256 reservesToken) =
             UniswapV2Library.getReserves(_uniswapFactory, address(_weth), address(_token));
+        console.log("quote amount from uniswap is ",UniswapV2Library.quote(amount.mul(10 ** 18), reservesToken, reservesWETH));
         return UniswapV2Library.quote(amount.mul(10 ** 18), reservesToken, reservesWETH);
     }
 }
