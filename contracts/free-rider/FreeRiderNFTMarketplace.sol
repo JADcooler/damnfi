@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "../DamnValuableNFT.sol";
-
+import "hardhat/console.sol";
 /**
  * @title FreeRiderNFTMarketplace
  * @author Damn Vulnerable DeFi (https://damnvulnerabledefi.xyz)
@@ -97,9 +97,11 @@ contract FreeRiderNFTMarketplace is ReentrancyGuard {
 
         // transfer from seller to buyer
         DamnValuableNFT _token = token; // cache for gas savings
+        // console.log("\n\nowner before transfer ",_token.ownerOf(tokenId));
         _token.safeTransferFrom(_token.ownerOf(tokenId), msg.sender, tokenId);
 
         // pay seller using cached token
+        // console.log("owner after transfer \n",_token.ownerOf(tokenId));
         payable(_token.ownerOf(tokenId)).sendValue(priceToPay);
 
         emit NFTBought(msg.sender, tokenId, priceToPay);
