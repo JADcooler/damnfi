@@ -16,7 +16,7 @@ describe('[Challenge] Backdoor', function () {
         masterCopy = await (await ethers.getContractFactory('GnosisSafe', deployer)).deploy();
         walletFactory = await (await ethers.getContractFactory('GnosisSafeProxyFactory', deployer)).deploy();
         token = await (await ethers.getContractFactory('DamnValuableToken', deployer)).deploy();
-        
+
         // Deploy the registry
         walletRegistry = await (await ethers.getContractFactory('WalletRegistry', deployer)).deploy(
             masterCopy.address,
@@ -44,9 +44,29 @@ describe('[Challenge] Backdoor', function () {
         await token.transfer(walletRegistry.address, AMOUNT_TOKENS_DISTRIBUTED);
     });
 
+    //start
+    it("Should contain reward balance ", async function (){
+        expect(await token.balanceOf(walletRegistry.address)).to.eq(40n * 10n ** 18n);
+    });
+
     it('Execution', async function () {
         /** CODE YOUR SOLUTION HERE */
+       
+        attackFactory = await ethers.getContractFactory('attackBackdoor', player);
+        attackit = await attackFactory.deploy(
+            masterCopy.address,
+            walletFactory.address,
+            walletRegistry.address,
+            token.address,
+            users,
+            {
+                gasLimit: 30000000
+            }
+        );
+
+
     });
+    //end
 
     after(async function () {
         /** SUCCESS CONDITIONS - NO NEED TO CHANGE ANYTHING HERE */
@@ -62,7 +82,7 @@ describe('[Challenge] Backdoor', function () {
                 ethers.constants.AddressZero,
                 'User did not register a wallet'
             );
-
+            console.log(i)
             // User is no longer registered as a beneficiary
             expect(
                 await walletRegistry.beneficiaries(users[i])
