@@ -13,7 +13,7 @@ import {
     CallerNotTimelock,
     NewDelayAboveMax
 } from "./ClimberErrors.sol";
-
+import "hardhat/console.sol";
 /**
  * @title ClimberTimelock
  * @author Damn Vulnerable DeFi (https://damnvulnerabledefi.xyz)
@@ -71,17 +71,21 @@ contract ClimberTimelock is ClimberTimelockBase {
         external
         payable
     {
+        console.log("e1");
         if (targets.length <= MIN_TARGETS) {
             revert InvalidTargetsCount();
         }
+        console.log("e2");
 
         if (targets.length != values.length) {
             revert InvalidValuesCount();
         }
+        console.log("e3");
 
         if (targets.length != dataElements.length) {
             revert InvalidDataElementsCount();
         }
+        console.log("e4");
 
         bytes32 id = getOperationId(targets, values, dataElements, salt);
 
@@ -91,12 +95,15 @@ contract ClimberTimelock is ClimberTimelockBase {
                 ++i;
             }
         }
+        console.log("e5");
 
         if (getOperationState(id) != OperationState.ReadyForExecution) {
             revert NotReadyForExecution(id);
         }
 
+        console.log("e6");
         operations[id].executed = true;
+        console.log("ef");
     }
 
     function updateDelay(uint64 newDelay) external {
