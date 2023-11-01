@@ -2,6 +2,7 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "hardhat/console.sol";
 
 interface IGnosisSafeProxyFactory {
     function createProxy(address masterCopy, bytes calldata data) external returns (address);
@@ -48,6 +49,7 @@ contract WalletDeployer {
      */
     function drop(bytes memory wat) external returns (address aim) {
         aim = fact.createProxy(copy, wat);
+        console.log('Dreachd eere');
         if (mom != address(0) && !can(msg.sender, aim)) {
             revert Boom();
         }
@@ -65,7 +67,11 @@ contract WalletDeployer {
             mstore(add(p,0x04),u)
             mstore(add(p,0x24),a)
             if iszero(staticcall(gas(),m,p,0x44,p,0x20)) {return(0,0)}
+            // gas	addr	argsOffset	argsLength	retOffset	retLength	
+
             if and(not(iszero(returndatasize())), iszero(mload(p))) {return(0,0)}
+            // if returnsize != 0 and success == 0
+            // return 0
         }
         return true;
     }

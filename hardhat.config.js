@@ -7,6 +7,9 @@ module.exports = {
     networks: {
       hardhat: {
         allowUnlimitedContractSize: true
+      },
+      fork: {
+        url: "${process.env.ALCHEMY_URL}"
       }
     },
     solidity: {
